@@ -900,6 +900,11 @@
         <h3>Kids Frock Collection</h3>
         <p>Ready-made frocks for children up to 10 years — everyday cotton to birthday and festive wear, priced by age group.</p>
       </a>
+      <a href="#" class="service-card" onclick="switchView('saree');return false;" style="text-decoration:none;color:inherit;display:block;">
+        <span class="num mono">06</span>
+        <h3>Saree Collection</h3>
+        <p>Silk, cotton, georgette, and festive weaves — priced with border work and occasion details for every look.</p>
+      </a>
     </div>
 
     <div class="reviews-strip">
@@ -1147,6 +1152,7 @@
       <div class="garment-toggle" style="margin-bottom:26px;">
         <button type="button" class="garment-btn active" onclick="switchView('kurti')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3L6 6 4 8v14h16V8l-2-2-3-3"/><path d="M9 3c1.5 2 4.5 2 6 0"/></svg> Kurti Collection</button>
         <button type="button" class="garment-btn" onclick="switchView('kids')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3L7 6 5 8l2 2-3 9h16l-3-9 2-2-2-2-2-3"/><path d="M9 3c1.5 2 4.5 2 6 0"/></svg> Kids Frocks</button>
+        <button type="button" class="garment-btn" onclick="switchView('saree')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3L6 6l2 2-3 10h14l-3-10 2-2-2-3"/><path d="M8 3c1.5 2 6.5 2 8 0"/><path d="M16 8l4 9-3 3"/></svg> Saree Collection</button>
       </div>
       <div class="section-head" style="margin-bottom:24px;">
         <span class="eyebrow">Ready to Wear</span>
@@ -1166,6 +1172,7 @@
       <div class="garment-toggle" style="margin-bottom:26px;">
         <button type="button" class="garment-btn" onclick="switchView('kurti')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3L6 6 4 8v14h16V8l-2-2-3-3"/><path d="M9 3c1.5 2 4.5 2 6 0"/></svg> Kurti Collection</button>
         <button type="button" class="garment-btn active" onclick="switchView('kids')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3L7 6 5 8l2 2-3 9h16l-3-9 2-2-2-2-2-3"/><path d="M9 3c1.5 2 4.5 2 6 0"/></svg> Kids Frocks</button>
+        <button type="button" class="garment-btn" onclick="switchView('saree')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3L6 6l2 2-3 10h14l-3-10 2-2-2-3"/><path d="M8 3c1.5 2 6.5 2 8 0"/><path d="M16 8l4 9-3 3"/></svg> Saree Collection</button>
       </div>
       <div class="section-head" style="margin-bottom:24px;">
         <span class="eyebrow">Ready to Wear · Up to 10 Years</span>
@@ -1176,6 +1183,26 @@
       <div class="kurti-filters" id="kidsFilters"></div>
 
       <div class="kurti-grid" id="kidsGrid"></div>
+    </div>
+  </section>
+
+  <!-- ============ SAREE COLLECTION ============ -->
+  <section id="view-saree">
+    <div class="kurti-wrap">
+      <div class="garment-toggle" style="margin-bottom:26px;">
+        <button type="button" class="garment-btn" onclick="switchView('kurti')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3L6 6 4 8v14h16V8l-2-2-3-3"/><path d="M9 3c1.5 2 4.5 2 6 0"/></svg> Kurti Collection</button>
+        <button type="button" class="garment-btn" onclick="switchView('kids')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3L7 6 5 8l2 2-3 9h16l-3-9 2-2-2-2-2-3"/><path d="M9 3c1.5 2 4.5 2 6 0"/></svg> Kids Frocks</button>
+        <button type="button" class="garment-btn active" onclick="switchView('saree')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3L6 6l2 2-3 10h14l-3-10 2-2-2-3"/><path d="M8 3c1.5 2 6.5 2 8 0"/><path d="M16 8l4 9-3 3"/></svg> Saree Collection</button>
+      </div>
+      <div class="section-head" style="margin-bottom:24px;">
+        <span class="eyebrow">Ready to Wear</span>
+        <h2>Saree Collection</h2>
+        <p>Browse our saree collection — silk, cotton, georgette, and festive weaves, priced with border and occasion details below.</p>
+      </div>
+
+      <div class="kurti-filters" id="sareeFilters"></div>
+
+      <div class="kurti-grid" id="sareeGrid"></div>
     </div>
   </section>
 
@@ -1311,13 +1338,14 @@
       <div class="dash-head">
         <div>
           <h2>Manage Products</h2>
-          <p>Add, edit, or remove items shown on the Kurti Collection and Kids Frocks pages. Paste the download link from the Image Converter into Image URL.</p>
+          <p>Add, edit, or remove items shown on the Kurti Collection, Kids Frocks, and Saree Collection pages. Paste the download link from the Image Converter into Image URL.</p>
         </div>
       </div>
 
       <div class="garment-toggle" id="manageCollectionToggle" style="margin-bottom:26px;">
         <button type="button" class="garment-btn active" data-key="kurti" onclick="setManageCollection('kurti')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3L6 6 4 8v14h16V8l-2-2-3-3"/><path d="M9 3c1.5 2 4.5 2 6 0"/></svg> Kurti Collection</button>
         <button type="button" class="garment-btn" data-key="kids" onclick="setManageCollection('kids')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3L7 6 5 8l2 2-3 9h16l-3-9 2-2-2-2-2-3"/><path d="M9 3c1.5 2 4.5 2 6 0"/></svg> Kids Frocks</button>
+        <button type="button" class="garment-btn" data-key="saree" onclick="setManageCollection('saree')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3L6 6l2 2-3 10h14l-3-10 2-2-2-3"/><path d="M8 3c1.5 2 6.5 2 8 0"/><path d="M16 8l4 9-3 3"/></svg> Saree Collection</button>
       </div>
 
       <div class="fitting-card" style="max-width:100%;margin-bottom:32px;">
@@ -1704,6 +1732,14 @@ function kidsFrockSVG(color){
     <path d="M34 55 Q50 60 66 55" stroke="${color}" stroke-width="1" stroke-dasharray="3 5" opacity="0.35" fill="none"/>
   </svg>`;
 }
+function sareeSVG(color){
+  return `<svg viewBox="0 0 100 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M30 10 Q50 2 70 10 L66 30 Q80 45 74 60 L60 108 L40 108 L26 60 Q20 45 34 30 Z" stroke="${color}" stroke-width="2" fill="${color}1A" stroke-linejoin="round"/>
+    <path d="M66 30 Q86 50 79 92 L67 101" stroke="${color}" stroke-width="2" fill="${color}1A" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M30 10 Q50 18 70 10" stroke="${color}" stroke-width="2" fill="none" stroke-linecap="round"/>
+    <line x1="50" y1="34" x2="46" y2="104" stroke="${color}" stroke-width="1" stroke-dasharray="3 5" opacity="0.35"/>
+  </svg>`;
+}
 
 const COLLECTIONS = {
   kurti: {
@@ -1749,10 +1785,28 @@ const COLLECTIONS = {
       {id:10, name:'Sequin Festive Frock', price:1499, mrp:1999, material:'Net & Satin', style:'Sleeveless', age:'9-10 Yrs', category:'9-10 Yrs', badge:'Premium', color:'#F1701D'},
     ],
   },
+  saree: {
+    title: 'Saree Collection',
+    storageKey: 'saree-products-v1',
+    gridId: 'sareeGrid',
+    filtersId: 'sareeFilters',
+    detail1Key: 'border', detail1Label: 'Border / Work',
+    detail2Key: 'occasion', detail2Label: 'Occasion', detail2Prefix: '',
+    categoryLabel: 'Fabric', categoryHint: 'e.g. Silk, Cotton, Georgette, Chiffon, Net',
+    svgFn: sareeSVG,
+    defaults: [
+      {id:1, name:'Kanjivaram Silk Saree', price:4999, mrp:6499, material:'Pure Silk', border:'Zari Border', occasion:'Wedding', category:'Silk', badge:'Bestseller', color:'#7B1E2B'},
+      {id:2, name:'Cotton Handloom Saree', price:1299, mrp:1599, material:'Handloom Cotton', border:'Temple Border', occasion:'Daily Wear', category:'Cotton', color:'#C21F68'},
+      {id:3, name:'Georgette Printed Saree', price:1799, mrp:2299, material:'Georgette', border:'Lace Border', occasion:'Party Wear', category:'Georgette', color:'#F1701D'},
+      {id:4, name:'Chiffon Party Saree', price:1599, mrp:1999, material:'Chiffon', border:'Sequin Border', occasion:'Party Wear', category:'Chiffon', badge:'New', color:'#E4287C'},
+      {id:5, name:'Banarasi Silk Saree', price:5499, mrp:6999, material:'Banarasi Silk', border:'Gold Zari', occasion:'Wedding', category:'Silk', badge:'Premium', color:'#7B1E2B'},
+      {id:6, name:'Net Embroidered Saree', price:2299, mrp:2899, material:'Soft Net', border:'Stone Work', occasion:'Festive', category:'Net', color:'#C21F68'},
+    ],
+  },
 };
 
-let PRODUCTS = { kurti: [], kids: [] };
-let activeCategory = { kurti: 'All', kids: 'All' };
+let PRODUCTS = { kurti: [], kids: [], saree: [] };
+let activeCategory = { kurti: 'All', kids: 'All', saree: 'All' };
 
 function dbRowToProduct(row, cfg){
   const p = {
@@ -2046,6 +2100,7 @@ document.getElementById('manageProductForm').addEventListener('submit', async fu
 
 refreshCollection('kurti');
 refreshCollection('kids');
+refreshCollection('saree');
 
 // ---------- Study: patterns & body types ----------
 function churidarSVG(color){
@@ -3072,7 +3127,7 @@ let dashboardUnlocked = false;
 
 const GATED_VIEWS = ['dashboard', 'image-tools', 'manage-products'];
 const ADMIN_VIEWS = ['dashboard', 'image-tools', 'manage-products'];
-const COLLECTION_VIEWS = ['kurti', 'kids'];
+const COLLECTION_VIEWS = ['kurti', 'kids', 'saree'];
 let pendingGateView = 'dashboard';
 
 function highlightNav(view){
