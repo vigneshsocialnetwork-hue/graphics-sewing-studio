@@ -3380,16 +3380,35 @@ async function loadOrders(){
 }
 
 async function insertOrder(orderData){
-  const { data, error } = await sb.from('orders').insert({
+  const payload = {
     customer_name: orderData.customerName,
     phone: orderData.phone,
     notes: orderData.notes || null,
     garment_type: orderData.garmentType,
     measurements: orderData.measurements,
     status: 'Booked',
-  }).select().single();
+  };
+  // Deliberately NOT chaining .select() here: reading the row back right after
+  // insert requires SELECT-policy visibility, and customers booking as the
+  // public "anon" role are not allowed to read the orders table (that's what
+  // keeps one customer from seeing another's measurements). Requesting the
+  // row back would fail even though the insert itself succeeds, and Postgres
+  // reports that as the same "row violates row-level security policy" error --
+  // so we just confirm success/failure and build the display object locally
+  // from what we already know, instead of reading it back from the database.
+  const { error } = await sb.from('orders').insert(payload);
   if(error){ console.error('Supabase insertOrder error', error); alert('Could not save measurements: ' + error.message); return null; }
-  return dbRowToOrder(data);
+  return {
+    id: 'local-' + Date.now(),
+    customerName: orderData.customerName,
+    phone: orderData.phone,
+    notes: orderData.notes || '',
+    garmentType: orderData.garmentType,
+    measurements: orderData.measurements,
+    status: 'Booked',
+    createdAt: new Date().toISOString(),
+    updatedAt: null,
+  };
 }
 
 async function updateOrderRow(id, patch){
