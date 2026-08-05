@@ -374,9 +374,33 @@
   .form-msg{
     display:none;margin-top:18px;padding:14px 16px;border-radius:8px;
     background:#EAF5EF;color:#7FBA3D;font-size:15.5px;font-weight:600;
-    align-items:center;gap:10px;
+    align-items:flex-start;gap:10px;
   }
   .form-msg.show{display:flex;}
+  .form-msg svg{flex-shrink:0;margin-top:2px;}
+  .form-msg-body{flex:1;}
+  #formMsgSummary{margin-top:10px;font-size:13.5px;font-weight:500;color:var(--ink-900);}
+  #formMsgSummary .summary-row{display:flex;justify-content:space-between;gap:12px;padding:4px 0;border-bottom:1px dashed var(--line);}
+  #formMsgSummary .summary-row .l{color:var(--ink-600);}
+  #formMsgSummary .summary-heading{font-size:11px;text-transform:uppercase;letter-spacing:.4px;color:var(--ink-600);font-weight:700;margin:10px 0 4px;}
+
+  .required-mark{color:#C0392B;}
+  .optional-hint{
+    background:var(--ivory-100);border:1px solid var(--line);border-radius:8px;
+    padding:10px 14px;font-size:13.5px;color:var(--ink-600);margin:0 0 16px;
+  }
+  .confirm-final-row{
+    display:flex;align-items:flex-start;gap:10px;margin-top:20px;padding:14px 16px;
+    background:var(--ivory-100);border:1px solid var(--line);border-radius:8px;
+    font-size:15px;color:var(--ink-900);cursor:pointer;
+  }
+  .confirm-final-row input{margin-top:3px;flex-shrink:0;width:18px;height:18px;accent-color:var(--maroon-900);cursor:pointer;}
+  .form-error{
+    display:none;margin-top:14px;padding:12px 16px;border-radius:8px;
+    background:#FBEAEA;color:#C0392B;font-size:14.5px;font-weight:600;
+  }
+  .form-error.show{display:block;}
+  .form-error ul{margin:6px 0 0;padding-left:18px;font-weight:500;}
   @media(max-width:640px){
     .two-col{grid-template-columns:1fr;}
     .measure-grid{grid-template-columns:1fr 1fr;}
@@ -1113,22 +1137,30 @@
           <form id="measureForm">
             <div class="two-col">
               <div class="field-group">
-                <label for="custName">Customer Name</label>
+                <label for="custName">Customer Name <span class="required-mark">*</span></label>
                 <input type="text" id="custName" required placeholder="e.g. Priya Ramesh">
               </div>
               <div class="field-group">
-                <label for="custPhone">Phone Number</label>
+                <label for="custPhone">Phone Number <span class="required-mark">*</span></label>
                 <input type="tel" id="custPhone" required placeholder="e.g. 98765 43210">
               </div>
             </div>
 
             <div class="measure-title"><h3 id="measureTitle">Fitting Measurements — Blouse</h3><span class="stitch"></span></div>
+            <p class="optional-hint">All measurements below are optional — fill in what you already know now. Anything left blank, our tailor will confirm in person before stitching.</p>
             <div id="measureGrid"></div>
 
             <div class="field-group" style="margin-top:22px;">
               <label for="custNotes">Notes (fabric, design, trial date, etc.)</label>
               <textarea id="custNotes" rows="3" placeholder="Any special instructions..."></textarea>
             </div>
+
+            <label class="confirm-final-row">
+              <input type="checkbox" id="confirmFinal">
+              <span>I confirm these details are correct and ready to save.</span>
+            </label>
+
+            <div class="form-error" id="formError"></div>
 
             <div class="submit-row">
               <button type="button" class="btn-ghost" id="btnClear" onclick="resetForm()">Clear</button>
@@ -1138,8 +1170,12 @@
             </div>
             <div class="form-msg" id="formMsg">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M20 6L9 17l-5-5"/></svg>
-              <span id="formMsgText">Measurements saved — added to the dashboard as a new order.</span>
+              <div class="form-msg-body">
+                <span id="formMsgText">Measurements saved.</span>
+                <div id="formMsgSummary"></div>
+              </div>
             </div>
+            <div id="myVersionHistory"></div>
           </form>
         </div>
       </div>
@@ -3257,12 +3293,17 @@ function selectGarment(garment){
   editingOrderId = null;
   document.getElementById('searchResults').innerHTML = '';
   document.getElementById('custSearchInput').value = '';
+  document.getElementById('formMsg').classList.remove('show');
+  document.getElementById('formError').classList.remove('show');
+  document.getElementById('myVersionHistory').innerHTML = '';
   setFormMode('new');
 }
 
 function resetForm(){
   document.getElementById('measureForm').reset();
   document.getElementById('formMsg').classList.remove('show');
+  document.getElementById('formError').classList.remove('show');
+  document.getElementById('myVersionHistory').innerHTML = '';
   document.getElementById('searchResults').innerHTML = '';
   document.getElementById('custSearchInput').value = '';
   editingOrderId = null;
@@ -3342,7 +3383,10 @@ function loadCustomerRecord(id){
   });
   document.getElementById('searchResults').innerHTML = '';
   document.getElementById('custSearchInput').value = '';
+  document.getElementById('formMsg').classList.remove('show');
+  document.getElementById('formError').classList.remove('show');
   setFormMode('view');
+  loadMyVersionHistory(o.id, o.phone);
 }
 
 async function updateMyOrder(id, phone, patch){
@@ -3353,7 +3397,11 @@ async function updateMyOrder(id, phone, patch){
     p_notes: patch.notes,
     p_measurements: patch.measurements,
   });
-  if(error){ console.error('Supabase update_my_order error', error); alert('Could not save changes: ' + error.message); return null; }
+  if(error){
+    console.error('Supabase update_my_order error', error);
+    alert('Could not save your changes.\n\nTechnical detail: ' + error.message + '\n\nPlease double-check your phone number matches exactly what you used to book originally — that\'s how we verify it\'s really your record.');
+    return null;
+  }
   const row = Array.isArray(data) ? data[0] : data;
   return row ? dbRowToOrder(row) : null;
 }
@@ -3397,7 +3445,11 @@ async function insertOrder(orderData){
   // so we just confirm success/failure and build the display object locally
   // from what we already know, instead of reading it back from the database.
   const { error } = await sb.from('orders').insert(payload);
-  if(error){ console.error('Supabase insertOrder error', error); alert('Could not save measurements: ' + error.message); return null; }
+  if(error){
+    console.error('Supabase insertOrder error', error);
+    alert('Could not save your measurements.\n\nTechnical detail: ' + error.message + '\n\nPlease make sure Customer Name and Phone Number are filled in — those are the only required fields, everything else can be left blank. If this keeps happening, please call or WhatsApp us the details directly so nothing is lost.');
+    return null;
+  }
   return {
     id: 'local-' + Date.now(),
     customerName: orderData.customerName,
@@ -3424,8 +3476,91 @@ async function deleteOrderRow(id){
 }
 
 // ---------- form submit (create new OR save changes to an existing order) ----------
+function fieldLabel(garment, key){
+  const f = (GARMENT_FIELDS[garment] || []).find(x => x.key === key);
+  return f ? f.label : key;
+}
+
+function buildEnteredSummary(garment, customerName, phone, notes, measurements){
+  const filled = Object.entries(measurements).filter(([, v]) => v !== '' && v != null);
+  let html = `
+    <div class="summary-row"><span class="l">Customer</span><span>${escapeHtml(customerName)}</span></div>
+    <div class="summary-row"><span class="l">Phone</span><span>${escapeHtml(phone)}</span></div>
+    <div class="summary-row"><span class="l">Garment</span><span>${escapeHtml(garment)}</span></div>
+  `;
+  if(filled.length > 0){
+    html += `<div class="summary-heading">Measurements entered (${filled.length} of ${GARMENT_FIELDS[garment].length})</div>`;
+    html += filled.map(([k, v]) => `<div class="summary-row"><span class="l">${escapeHtml(fieldLabel(garment, k))}</span><span>${escapeHtml(v)} in</span></div>`).join('');
+  } else {
+    html += `<div class="summary-heading">No measurements entered yet — our tailor will confirm these with you in person.</div>`;
+  }
+  if(notes){
+    html += `<div class="summary-heading">Notes</div><div class="summary-row"><span>${escapeHtml(notes)}</span></div>`;
+  }
+  return html;
+}
+
+function renderMyVersionHistoryLocal(versions){
+  const container = document.getElementById('myVersionHistory');
+  if(!versions || versions.length === 0){ container.innerHTML = ''; return; }
+  const garment = currentGarment;
+  const cfg = GARMENT_FIELDS[garment] || [];
+  container.innerHTML = `
+    <div style="font-size:10.5px;text-transform:uppercase;letter-spacing:.4px;color:var(--ink-600);font-weight:600;margin:22px 0 8px;">Your Measurement History &middot; up to 3 kept, oldest removed automatically</div>
+    ${versions.map((v, i) => {
+      const isFinal = i === 0;
+      const vid = 'myv_' + i;
+      return `
+        <div class="version-card ${isFinal ? 'final' : ''}">
+          <div class="version-head" onclick="document.getElementById('${vid}').classList.toggle('show')">
+            <span><span class="version-tag ${isFinal ? 'final' : ''}">${isFinal ? 'Final (Most Recent)' : 'Earlier Version ' + (versions.length - i)}</span> &nbsp; <span class="version-date">${formatDate(v.updated_at)}</span></span>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+          </div>
+          <div class="version-detail" id="${vid}">
+            ${cfg.map(f => `
+              <div class="version-field">
+                <div class="l">${f.label}</div>
+                <div class="v">${(v.measurements && v.measurements[f.key]) ? v.measurements[f.key] + ' in' : '—'}</div>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+      `;
+    }).join('')}
+  `;
+}
+
+async function loadMyVersionHistory(orderId, phone){
+  const { data, error } = await sb.rpc('get_my_order_versions', { p_phone: phone, p_order_id: orderId });
+  if(error){ console.error('get_my_order_versions error', error); return; }
+  renderMyVersionHistoryLocal(data || []);
+}
+
 document.getElementById('measureForm').addEventListener('submit', async function(e){
   e.preventDefault();
+
+  const errEl = document.getElementById('formError');
+  errEl.classList.remove('show');
+  errEl.innerHTML = '';
+
+  const name = document.getElementById('custName').value.trim();
+  const phone = document.getElementById('custPhone').value.trim();
+  const notes = document.getElementById('custNotes').value.trim();
+  const confirmChecked = document.getElementById('confirmFinal').checked;
+
+  const problems = [];
+  if(!name) problems.push('Customer Name is required.');
+  if(!phone) problems.push('Phone Number is required.');
+  else if(phone.replace(/\D/g, '').length < 10) problems.push('Phone Number looks incomplete — please enter a full 10-digit number.');
+  if(!confirmChecked) problems.push('Please check the confirmation box to save these details as final.');
+
+  if(problems.length > 0){
+    errEl.innerHTML = 'Please fix the following before saving:<ul>' + problems.map(p => `<li>${escapeHtml(p)}</li>`).join('') + '</ul>';
+    errEl.classList.add('show');
+    errEl.scrollIntoView({behavior:'smooth', block:'center'});
+    return;
+  }
+
   const measurements = {};
   GARMENT_FIELDS[currentGarment].forEach(f => {
     measurements[f.key] = document.getElementById('m_' + f.key).value || '';
@@ -3436,35 +3571,40 @@ document.getElementById('measureForm').addEventListener('submit', async function
   btn.disabled = true; btn.textContent = savingLabel;
 
   if(editingOrderId){
-    const updated = await updateMyOrder(editingOrderId, document.getElementById('custPhone').value.trim(), {
-      customer_name: document.getElementById('custName').value.trim(),
-      notes: document.getElementById('custNotes').value.trim(),
+    const updated = await updateMyOrder(editingOrderId, phone, {
+      customer_name: name,
+      notes: notes,
       measurements,
     });
     if(updated){
-      document.getElementById('formMsgText').textContent = 'Changes saved to this customer\'s measurements.';
+      document.getElementById('formMsgText').textContent = 'Changes saved — this is now your final, most recent version.';
+      document.getElementById('formMsgSummary').innerHTML = buildEnteredSummary(currentGarment, name, phone, notes, measurements);
       document.getElementById('formMsg').classList.add('show');
+      document.getElementById('confirmFinal').checked = false;
       setFormMode('view');
+      loadMyVersionHistory(updated.id, phone);
+      document.getElementById('formMsg').scrollIntoView({behavior:'smooth', block:'center'});
     }
     btn.disabled = false;
   }else{
     const created = await insertOrder({
-      customerName: document.getElementById('custName').value.trim(),
-      phone: document.getElementById('custPhone').value.trim(),
-      notes: document.getElementById('custNotes').value.trim(),
+      customerName: name,
+      phone: phone,
+      notes: notes,
       garmentType: currentGarment,
       measurements,
     });
     if(created){
       ORDERS.unshift(created);
-      document.getElementById('formMsgText').textContent = 'Measurements saved — added to the dashboard as a new order.';
-      document.getElementById('formMsg').classList.add('show');
       resetForm();
+      document.getElementById('formMsgText').textContent = 'Measurements saved successfully.';
+      document.getElementById('formMsgSummary').innerHTML = buildEnteredSummary(created.garmentType, created.customerName, created.phone, created.notes, created.measurements);
+      document.getElementById('formMsg').classList.add('show');
+      renderMyVersionHistoryLocal([{ updated_at: created.createdAt, measurements: created.measurements }]);
+      document.getElementById('formMsg').scrollIntoView({behavior:'smooth', block:'center'});
     }
     btn.disabled = false;
   }
-
-  setTimeout(() => document.getElementById('formMsg').classList.remove('show'), 4000);
 });
 
 // ---------- dashboard rendering ----------
