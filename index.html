@@ -2786,7 +2786,7 @@ function setStudyTab(tab){
 
 function studyCardArt(item, color, sharedSvgFn, category){
   const uploaded = category && STUDY_IMAGES[category] && STUDY_IMAGES[category][item.name];
-  if(uploaded) return `<img src="${escapeHtml(uploaded.url)}" alt="${escapeHtml(item.name)}" style="width:100%;height:100%;object-fit:cover;">`;
+  if(uploaded) return `<img src="${escapeHtml(uploaded.url)}" alt="${escapeHtml(item.name)}" style="width:100%;height:100%;object-fit:contain;">`;
   if(item.customSvg) return item.customSvg(color);
   if(item.shape) return bodyShapeSVG(item.shape, color);
   if(sharedSvgFn) return sharedSvgFn(color);
