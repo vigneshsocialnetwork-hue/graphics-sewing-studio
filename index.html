@@ -3499,7 +3499,7 @@ async function handleLogin(e){
   btn.disabled = false; btn.textContent = 'Sign In';
 
   if(error){
-    document.getElementById('gateError').textContent = 'Incorrect email or password. Please try again.';
+    document.getElementById('gateError').textContent = error.message || 'Incorrect email or password. Please try again.';
     document.getElementById('gateError').classList.add('show');
     return false;
   }
